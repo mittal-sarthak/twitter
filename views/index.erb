@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="http://localhost:8888/main.css">
+</head>
+<body>
+
+<a href="/logout"><button> Logout</button> </a>
+<% id = session[:user_id] %>
+<% user = User.get(id) %>
+<p align="right">Welcome,  <%=user.username%>!!</p>
+<h1 align="center">NEWSFEED <h1>
+
+<h3>New Status </h3>
+
+
+<form action="/create_task" method="post">
+<input onblur="textCounter(this.form.recipients,this,140);" disabled  onfocus="this.blur();" tabindex="999" maxlength="3" size="3" value="140" name="counter">
+<br><textarea onblur="textCounter(this,this.form.counter,140);" onkeyup="textCounter(this,this.form.counter,140);" style="WIDTH: 608px; HEIGHT: 94px" name="taskz" rows="1" cols="15" >
+</textarea>
+<br>
+<input type="submit" name="submit" value="post"/>
+
+</form>
+<br><br>
+<% if todos %>
+
+<% todos.each do |todo| %>
+
+<% post_uid = todo.user_id %>
+<% post_user = User.get(post_uid) %>
+
+<p  style="font-size:10px;margin-left:1%"><i>
+<%if post_user.username == user.username %>
+	<p  style="font-size:10px;margin-left:1%"><i>You tweeted this...</i></p>
+	<% else %>
+	<p  style="font-size:10px;margin-left:1%"><i><%=post_user.username%> tweeted this...</i></p>
+<% end %>
+<div id = "box">
+
+<%= todo.task %> 
+
+
+
+</div>
+<form action="/upvote" method="post">
+<input type="hidden" name="task_id" value="<%= todo.id %>" />
+<input type="submit" name="upvotes" value="<%=todo.upvotes%>">
+<input type="hidden" name="user" value="<%=user.username%>">
+
+
+</form>
+
+<% end %>
+<% end %>
+
+
+
+
+</body>
+</html>
+
+<style type="text/css">
+	.strike{
+	text-decoration: line-through;
+}
+a:visited{
+	color:black;
+}
+a{
+	text-decoration:none;
+}
+</style>
+<script type="text/javascript">
+	function textCounter( field, countfield, maxlimit ) {
+ if ( field.value.length > maxlimit ) {
+  field.value = field.value.substring( 0, maxlimit );
+  field.blur();
+  field.focus();
+  return false;
+ } else {
+  countfield.value = maxlimit - field.value.length;
+ }
+}
+
+
+</script>
